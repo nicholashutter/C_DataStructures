@@ -6,6 +6,8 @@ return codes:
 
 #include <stdlib.h>
 #include "Stack.h"
+#include "ErrorCode.h"
+#include "Optional.h"
 
 struct Stack
 {
@@ -24,7 +26,7 @@ Stack *new_stack(size_t maxSize)
 
     stack_ptr->maxSize = maxSize;
 
-    stack_ptr->top = 0;
+    stack_ptr->top = -1;
 
     if (stack_ptr == NULL)
     {
@@ -34,26 +36,89 @@ Stack *new_stack(size_t maxSize)
     return stack_ptr;
 }
 
-void push(Stack *stack_ptr, int value)
+Optional push(Stack *stack_ptr, int value)
 {
+    stack_ptr->stack[stack_ptr->top] = value;
+
+    ErrorCode returnCode = SUCCESS;
+
+    if (stack_ptr == NULL)
+    {
+        returnCode = FAILURE;
+    }
+    else if (stack_ptr->top <= stack_ptr->maxSize)
+    {
+        stack_ptr->top++;
+    }
+    else
+    {
+        returnCode = FAILURE;
+    }
+
+    return new_optional(NULL, returnCode);
 }
 
-int pop(Stack *stack_ptr)
+Optional pop(Stack *stack_ptr)
 {
-    return 0;
+    ErrorCode returnCode = SUCCESS;
+
+    int popped = NULL;
+
+    if (stack_ptr == NULL)
+    {
+        returnCode = FAILURE;
+    }
+
+    else if (stack_ptr->top < 0)
+    {
+        returnCode = FAILURE;
+    }
+    else
+    {
+        popped = stack_ptr->stack[stack_ptr->top];
+
+        stack_ptr->top--;
+    }
+
+    return new_optional(popped,returnCode);
 }
 
-int isEmpty(Stack *stack_ptr)
+Optional isEmpty(Stack *stack_ptr)
 {
-    return 0;
+    int returnCode = FALSE;
+
+    if (stack_ptr == NULL)
+    {
+        returnCode = FAILURE;
+    }
+    else if (stack_ptr->top == -1)
+    {
+        returnCode = TRUE;
+    }
+
+    return new_optional(NULL, returnCode);
 }
 
-int isFull(Stack *stack_ptr)
+Optional isFull(Stack *stack_ptr)
 {
-    return 0;
+    int returnCode = TRUE;
+
+    if (stack_ptr == NULL)
+    {
+        returnCode = TRUE;
+    }
+
+    else if (stack_ptr->top == stack_ptr->maxSize)
+    {
+        returnCode = FALSE;
+    }
+
+    return new_optional(NULL, returnCode);
 }
 
-int peek(Stack *stack_ptr)
+Optional peek(Stack *stack_ptr)
 {
-    return 0;
+    int returnValue = stack_ptr->stack[stack_ptr->top];
+
+    return new_optional(NULL, returnValue);
 }
