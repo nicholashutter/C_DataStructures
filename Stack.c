@@ -36,7 +36,7 @@ Stack *new_stack(size_t maxSize)
     return stack_ptr;
 }
 
-Optional push(Stack *stack_ptr, int value)
+ErrorCode push(Stack *stack_ptr, int value)
 {
     stack_ptr->stack[stack_ptr->top] = value;
 
@@ -55,14 +55,14 @@ Optional push(Stack *stack_ptr, int value)
         returnCode = FAILURE;
     }
 
-    return new_optional(NULL, returnCode);
+    return returnCode;
 }
 
 Optional pop(Stack *stack_ptr)
 {
     ErrorCode returnCode = SUCCESS;
 
-    int popped = NULL;
+    int popped = 0;
 
     if (stack_ptr == NULL)
     {
@@ -80,12 +80,12 @@ Optional pop(Stack *stack_ptr)
         stack_ptr->top--;
     }
 
-    return new_optional(popped,returnCode);
+    return new_optional(popped, returnCode);
 }
 
-Optional isEmpty(Stack *stack_ptr)
+ErrorCode isEmpty(Stack *stack_ptr)
 {
-    int returnCode = FALSE;
+    ErrorCode returnCode = FALSE;
 
     if (stack_ptr == NULL)
     {
@@ -96,12 +96,12 @@ Optional isEmpty(Stack *stack_ptr)
         returnCode = TRUE;
     }
 
-    return new_optional(NULL, returnCode);
+    return returnCode;
 }
 
-Optional isFull(Stack *stack_ptr)
+ErrorCode isFull(Stack *stack_ptr)
 {
-    int returnCode = TRUE;
+    ErrorCode returnCode = TRUE;
 
     if (stack_ptr == NULL)
     {
@@ -113,12 +113,22 @@ Optional isFull(Stack *stack_ptr)
         returnCode = FALSE;
     }
 
-    return new_optional(NULL, returnCode);
+    return returnCode;
 }
 
 Optional peek(Stack *stack_ptr)
 {
-    int returnValue = stack_ptr->stack[stack_ptr->top];
+    ErrorCode returnCode = SUCCESS;
+    int returnValue = 0;
 
-    return new_optional(NULL, returnValue);
+    if (stack_ptr == NULL)
+    {
+        returnCode = FAILURE;
+    }
+    else
+    {
+        returnValue = stack_ptr->stack[stack_ptr->top];
+    }
+
+    return new_optional(returnValue, returnCode);
 }
