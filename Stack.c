@@ -1,9 +1,3 @@
-/*
-return codes:
-0 = success
-1 = failure
-*/
-
 #include <stdlib.h>
 #include "Stack.h"
 #include "ErrorCode.h"
@@ -13,7 +7,7 @@ struct Stack
 
     int top;
     int maxSize;
-    int *stack;
+    void **stack;
 };
 
 ErrorCode new_stack(size_t maxSize, Stack *returnValue)
@@ -21,7 +15,7 @@ ErrorCode new_stack(size_t maxSize, Stack *returnValue)
 
     Stack *stack_ptr = malloc(sizeof(Stack));
 
-    stack_ptr->stack = malloc(maxSize * sizeof(int));
+    stack_ptr->stack = malloc(maxSize * sizeof(void *));
 
     stack_ptr->maxSize = maxSize;
 
@@ -30,9 +24,8 @@ ErrorCode new_stack(size_t maxSize, Stack *returnValue)
     returnValue = stack_ptr;
 }
 
-ErrorCode push(Stack *self, int value)
+ErrorCode push(Stack *self, void *inputValue)
 {
-    self->stack[self->top] = value;
 
     ErrorCode returnCode = SUCCESS;
 
@@ -43,6 +36,7 @@ ErrorCode push(Stack *self, int value)
     else if (self->top <= self->maxSize)
     {
         self->top++;
+        self->stack[self->top] = inputValue;
     }
     else
     {
@@ -52,7 +46,7 @@ ErrorCode push(Stack *self, int value)
     return returnCode;
 }
 
-ErrorCode pop(Stack *self, int *returnValue)
+ErrorCode pop(Stack *self, void *returnValue)
 {
     ErrorCode returnCode = SUCCESS;
 
@@ -67,7 +61,7 @@ ErrorCode pop(Stack *self, int *returnValue)
     }
     else
     {
-        *returnValue = self->stack[self->top];
+        returnValue = self->stack[self->top];
 
         self->top--;
     }
@@ -108,7 +102,7 @@ ErrorCode isFull(Stack *self)
     return returnCode;
 }
 
-ErrorCode peek(Stack *self, int *returnValue)
+ErrorCode peek(Stack *self, void *returnValue)
 {
     ErrorCode returnCode = SUCCESS;
 
@@ -118,7 +112,7 @@ ErrorCode peek(Stack *self, int *returnValue)
     }
     else
     {
-        *returnValue = self->stack[self->top];
+        returnValue = self->stack[self->top];
     }
 
     return returnCode;

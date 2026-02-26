@@ -9,14 +9,14 @@ typedef struct Stack Stack;
 // constructor
 ErrorCode new_stack(size_t maxSize, Stack *returnValue);
 // add new element to top of stack
-ErrorCode push(Stack *self, int value);
+ErrorCode push(Stack *self, void* inputValue);
 // remove highest element from stack and return
-ErrorCode pop(Stack *self, int *returnValue);
+ErrorCode pop(Stack *self, void *returnValue);
 // check if the stack is empty
 ErrorCode isEmpty(Stack *self);
 // check if the stack is full
 ErrorCode isFull(Stack *self);
 // return a copy of the highest element
-ErrorCode peek(Stack *self, int *returnValue);
+ErrorCode peek(Stack *self, void *returnValue);
 
 #endif
