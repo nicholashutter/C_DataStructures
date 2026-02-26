@@ -7,7 +7,6 @@ return codes:
 #include <stdlib.h>
 #include "Stack.h"
 #include "ErrorCode.h"
-#include "Optional.h"
 
 struct Stack
 {
@@ -17,7 +16,7 @@ struct Stack
     int *stack;
 };
 
-Stack *new_stack(size_t maxSize)
+ErrorCode new_stack(size_t maxSize, Stack *returnValue)
 {
 
     Stack *stack_ptr = malloc(sizeof(Stack));
@@ -28,27 +27,22 @@ Stack *new_stack(size_t maxSize)
 
     stack_ptr->top = -1;
 
-    if (stack_ptr == NULL)
-    {
-        return NULL;
-    }
-
-    return stack_ptr;
+    returnValue = stack_ptr;
 }
 
-ErrorCode push(Stack *stack_ptr, int value)
+ErrorCode push(Stack *self, int value)
 {
-    stack_ptr->stack[stack_ptr->top] = value;
+    self->stack[self->top] = value;
 
     ErrorCode returnCode = SUCCESS;
 
-    if (stack_ptr == NULL)
+    if (self == NULL)
     {
         returnCode = FAILURE;
     }
-    else if (stack_ptr->top <= stack_ptr->maxSize)
+    else if (self->top <= self->maxSize)
     {
-        stack_ptr->top++;
+        self->top++;
     }
     else
     {
@@ -58,40 +52,38 @@ ErrorCode push(Stack *stack_ptr, int value)
     return returnCode;
 }
 
-Optional pop(Stack *stack_ptr)
+ErrorCode pop(Stack *self, int *returnValue)
 {
     ErrorCode returnCode = SUCCESS;
 
-    int popped = 0;
-
-    if (stack_ptr == NULL)
+    if (self == NULL)
     {
         returnCode = FAILURE;
     }
 
-    else if (stack_ptr->top < 0)
+    else if (self->top < 0)
     {
         returnCode = FAILURE;
     }
     else
     {
-        popped = stack_ptr->stack[stack_ptr->top];
+        *returnValue = self->stack[self->top];
 
-        stack_ptr->top--;
+        self->top--;
     }
 
-    return new_optional(popped, returnCode);
+    return returnCode;
 }
 
-ErrorCode isEmpty(Stack *stack_ptr)
+ErrorCode isEmpty(Stack *self)
 {
     ErrorCode returnCode = FALSE;
 
-    if (stack_ptr == NULL)
+    if (self == NULL)
     {
         returnCode = FAILURE;
     }
-    else if (stack_ptr->top == -1)
+    else if (self->top == -1)
     {
         returnCode = TRUE;
     }
@@ -99,16 +91,16 @@ ErrorCode isEmpty(Stack *stack_ptr)
     return returnCode;
 }
 
-ErrorCode isFull(Stack *stack_ptr)
+ErrorCode isFull(Stack *self)
 {
     ErrorCode returnCode = TRUE;
 
-    if (stack_ptr == NULL)
+    if (self == NULL)
     {
         returnCode = TRUE;
     }
 
-    else if (stack_ptr->top == stack_ptr->maxSize)
+    else if (self->top == self->maxSize)
     {
         returnCode = FALSE;
     }
@@ -116,19 +108,18 @@ ErrorCode isFull(Stack *stack_ptr)
     return returnCode;
 }
 
-Optional peek(Stack *stack_ptr)
+ErrorCode peek(Stack *self, int *returnValue)
 {
     ErrorCode returnCode = SUCCESS;
-    int returnValue = 0;
 
-    if (stack_ptr == NULL)
+    if (self == NULL)
     {
         returnCode = FAILURE;
     }
     else
     {
-        returnValue = stack_ptr->stack[stack_ptr->top];
+        *returnValue = self->stack[self->top];
     }
 
-    return new_optional(returnValue, returnCode);
+    return returnCode;
 }
